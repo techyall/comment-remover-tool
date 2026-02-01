@@ -1,1 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Comment Remover Tool | TechyAll</title>
+  <meta name="description" content="Remove comments from source code. Currently supports HTML, CSS, and JavaScript, with more languages planned.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #FF6B00;       
+      --primary-dark: #E55A00;  
+      --secondary: #1E3A8A;     
+      --dark: #0F172A;         
+      --light: #F8FAFC;         
+      --gray: #64748B;          
+      --gray-light: #E2E8F0;   
+      --success: #10B981;      
+      --warning: #F59E0B;      
+      --card-bg: #FFFFFF;      
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--light);
+      color: #334155;
+      line-height: 1.6;
+    }
+    
+    .hero {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(255, 107, 0, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(255, 107, 0, 0.05) 0%, transparent 25%);
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .hero small {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 10px;
+      color: #CBD5E1;
+    }
+    
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--primary);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+      margin-top: 10px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .cta-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 107, 0, 0.3);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    
+    .section {
+      margin-bottom: 80px;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--secondary);
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--gray-light);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--secondary);
+    }
+    
+    .languages-support {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .language-tag {
+      background: #FEF3C7;
+      color: #92400E;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 107, 0, 0.2);
+    }
+    
+    .language-tag.coming-soon {
+      background: #F1F5F9;
+      color: #475569;
+      border: 1px dashed #CBD5E1;
+    }
+    
+    .language-tag i {
+      color: var(--primary);
+    }
+    
+    .code-examples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .code-block {
+      background: var(--dark);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .code-header {
+      background: #1E293B;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--gray-light);
+      font-weight: 600;
+      border-bottom: 1px solid #334155;
+    }
+    
+    .code-header span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .code-content {
+      padding: 20px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      min-height: 220px;
+    }
+    
+    .comment {
+      color: #94A3B8;
+      font-style: italic;
+    }
+    
+    .html-tag {
+      color: #7DD3FC; 
+    }
+    
+    .html-attr {
+      color: #F0ABFC; 
+    }
+    
+    .css-selector {
+      color: #7DD3FC; 
+    }
+    
+    .css-property {
+      color: #86EFAC; 
+    }
+    
+    .css-value {
+      color: #FDE68A; 
+    }
+    
+    .js-keyword {
+      color: #7DD3FC; 
+    }
+    
+    .js-function {
+      color: #86EFAC; 
+    }
+    
+    .js-string {
+      color: #FDE68A; 
+    }
+    
+    .note {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
+      padding: 25px;
+      border-radius: 10px;
+      border-left: 5px solid var(--primary);
+      margin-top: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .note h3 {
+      color: var(--secondary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .note ul {
+      padding-left: 20px;
+      margin-top: 15px;
+    }
+    
+    .note li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 10px;
+    }
+    
+    .note li::before {
+      content: "→";
+      color: var(--primary);
+      font-weight: bold;
+      position: absolute;
+      left: -10px;
+    }
+    
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 40px;
+      text-align: center;
+    }
+    
+    .stat-item {
+      padding: 15px;
+    }
+    
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      color: var(--gray);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 60px 20px 30px;
+      text-align: center;
+    }
+    
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-top: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .footer-links a {
+      color: #CBD5E1;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    
+    .copyright {
+      color: #94A3B8;
+      font-size: 0.9rem;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #334155;
+    }
+    
+    .language-examples {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 30px;
+      margin-top: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--gray-light);
+    }
+    
+    .example-title {
+      font-size: 1.3rem;
+      color: var(--secondary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .example-title i {
+      color: var(--primary);
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      .section-title {
+        font-size: 1.7rem;
+      }
+      
+      .features-grid, .code-examples {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats {
+        gap: 20px;
+      }
+      
+      .footer-links {
+        gap: 15px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .hero {
+        padding: 60px 20px;
+      }
+      
+      .container {
+        padding: 40px 20px;
+      }
+      
+      .language-tag {
+        padding: 6px 14px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
 
+<div class="hero">
+  <div class="hero-content">
+    <h1>Comment Remover Tool</h1>
+    <p>
+      Automatically remove comments from your HTML, CSS, and JavaScript code. 
+      Clean, optimize, and prepare your code for production with our intelligent tool.
+    </p>
+    <small>Currently supports HTML, CSS & JavaScript — more languages coming soon</small>
+    
+    <a href="https://techyall.com/tools/comment-remover" class="cta-button">
+      <i class="fas fa-external-link-alt"></i>
+      Use Live Tool
+    </a>
+    
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Languages</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Free</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Fast</div>
+        <div class="stat-label">Processing</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <section class="section">
+    <h2 class="section-title">About This Project</h2>
+    <p>
+      The Comment Remover Tool is designed to help developers clean their source code by 
+      automatically detecting and removing comments. This results in cleaner, more readable 
+      code and can reduce file sizes for production deployment.
+    </p>
+    <p>
+      This project is actively evolving with regular updates and improvements. 
+      We're constantly working to support more programming languages and enhance 
+      the comment detection algorithms.
+    </p>
+    
+    <div class="note">
+      <h3><i class="fas fa-external-link-alt"></i> Live Version Available</h3>
+      <p>
+        Use the latest version with additional features on the official website:
+        <a href="https://techyall.com/tools/comment-remover" style="color: var(--primary); font-weight: 600;">
+          TechyAll Comment Remover
+        </a>
+      </p>
+    </div>
+  </section>
+  
+  <section class="section">
+    <h2 class="section-title">Supported Languages</h2>
+    <p>Our tool currently supports the following languages with intelligent comment pattern detection:</p>
+    
+    <div class="languages-support">
+      <div class="language-tag">
+        <i class="fab fa-html5"></i> HTML
+      </div>
+      <div class="language-tag">
+        <i class="fab fa-css3-alt"></i> CSS
+      </div>
+      <div class="language-tag">
+        <i class="fab fa-js"></i> JavaScript
+      </div>
+      
+    </div>
+    
+    <div class="language-examples">
+      <h3 class="example-title"><i class="fas fa-code"></i> Code Examples with Comments</h3>
+      <p>Below are examples of code with comments that our tool can automatically detect and remove:</p>
+    </div>
+    
+    <div class="code-examples">
+      <div class="code-block">
+        <div class="code-header">
+          <span><i class="fab fa-html5"></i> HTML</span>
+          <span>With Comments</span>
+        </div>
+        <div class="code-content">
+          <span class="comment">&lt;!-- Main navigation starts here --&gt;</span><br>
+          &lt;<span class="html-tag">nav</span> <span class="html-attr">class</span>=<span class="js-string">"navbar"</span>&gt;<br>
+          &nbsp;&nbsp;<span class="comment">&lt;!-- Logo section --&gt;</span><br>
+          &nbsp;&nbsp;&lt;<span class="html-tag">div</span> <span class="html-attr">class</span>=<span class="js-string">"logo"</span>&gt;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="html-tag">img</span> <span class="html-attr">src</span>=<span class="js-string">"logo.png"</span> <span class="html-attr">alt</span>=<span class="js-string">"Logo"</span>&gt;<br>
+          &nbsp;&nbsp;&lt;/<span class="html-tag">div</span>&gt;<br>
+          <br>
+          &nbsp;&nbsp;<span class="comment">&lt;!-- TODO: Add search functionality --&gt;</span><br>
+          &nbsp;&nbsp;&lt;<span class="html-tag">div</span> <span class="html-attr">class</span>=<span class="js-string">"search"</span>&gt;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="html-tag">input</span> <span class="html-attr">type</span>=<span class="js-string">"text"</span> <span class="html-attr">placeholder</span>=<span class="js-string">"Search..."</span>&gt;<br>
+          &nbsp;&nbsp;&lt;/<span class="html-tag">div</span>&gt;<br>
+          &lt;/<span class="html-tag">nav</span>&gt;
+        </div>
+      </div>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span><i class="fab fa-css3-alt"></i> CSS</span>
+          <span>With Comments</span>
+        </div>
+        <div class="code-content">
+          <span class="comment">/* Main container styles */</span><br>
+          <span class="css-selector">.container</span> {<br>
+          &nbsp;&nbsp;<span class="css-property">max-width</span>: <span class="css-value">1200px</span>;<br>
+          &nbsp;&nbsp;<span class="css-property">margin</span>: <span class="css-value">0 auto</span>;<br>
+          &nbsp;&nbsp;<span class="css-property">padding</span>: <span class="css-value">20px</span>;<br>
+          }<br>
+          <br>
+          <span class="comment">/* Navigation styles - added on 2025-10-15 */</span><br>
+          <span class="css-selector">.navbar</span> {<br>
+          &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">flex</span>;<br>
+          &nbsp;&nbsp;<span class="css-property">justify-content</span>: <span class="css-value">space-between</span>;<br>
+          &nbsp;&nbsp;<span class="comment">/* FIXME: Check alignment on mobile */</span><br>
+          &nbsp;&nbsp;<span class="css-property">align-items</span>: <span class="css-value">center</span>;<br>
+          }
+        </div>
+      </div>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span><i class="fab fa-js"></i> JavaScript</span>
+          <span>With Comments</span>
+        </div>
+        <div class="code-content">
+          <span class="comment">// Calculate total price with tax</span><br>
+          <span class="js-keyword">function</span> <span class="js-function">calculateTotal</span>(price, taxRate) {<br>
+          &nbsp;&nbsp;<span class="comment">// Validate inputs</span><br>
+          &nbsp;&nbsp;<span class="js-keyword">if</span> (price &lt; <span class="js-string">0</span>) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="js-keyword">return</span> <span class="js-string">0</span>;<br>
+          &nbsp;&nbsp;}<br>
+          <br>
+          &nbsp;&nbsp;<span class="comment">/*<br>
+          &nbsp;&nbsp; * Calculate total with tax<br>
+          &nbsp;&nbsp; * TODO: Add discount functionality<br>
+          &nbsp;&nbsp; */</span><br>
+          &nbsp;&nbsp;<span class="js-keyword">const</span> total = price + (price * taxRate);<br>
+          &nbsp;&nbsp;<span class="js-keyword">return</span> total;<br>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section">
+    <h2 class="section-title">How It Works</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-paste"></i>
+        </div>
+        <h3>Paste Your Code</h3>
+        <p>Copy and paste your HTML, CSS, or JavaScript code into the tool. The tool automatically detects the language.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3>Intelligent Detection</h3>
+        <p>Our algorithm scans your code and identifies all comments based on language-specific syntax patterns.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-broom"></i>
+        </div>
+        <h3>Clean Output</h3>
+        <p>Get clean, comment-free code that's ready for production. All functional code remains intact.</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section">
+    <h2 class="section-title">Roadmap</h2>
+    
+    <div class="note">
+      <h3><i class="fas fa-road"></i> Future Development Plans</h3>
+      <ul>
+        <li><strong>More Languages:</strong> Adding support for Python, PHP, Java, C++, C#, and more</li>
+        <li><strong>License Preservation:</strong> Option to keep license headers and important comments</li>
+        <li><strong>File Upload:</strong> Upload entire files instead of pasting code</li>
+        <li><strong>Batch Processing:</strong> Clean multiple files at once for larger projects</li>
+        <li><strong>API Access:</strong> Integrate our tool into your development workflow</li>
+        <li><strong>Performance:</strong> Optimized algorithms for faster processing of large codebases</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-content">
+    <h3>Comment Remover Tool</h3>
+    <p>An open-source project to help developers clean their code by removing comments automatically.</p>
+    
+    <div class="footer-links">
+      <a href="https://techyall.com/tools/comment-remover">
+        <i class="fas fa-external-link-alt"></i> Live Tool
+      </a>
+      <a href="https://github.com/techyall">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      <a href="https://techyall.com">
+        <i class="fas fa-home"></i> TechyAll
+      </a>
+    </div>
+    
+    <div class="copyright">
+      &copy; 2026 Techyall.com | Part of the TechyAll toolkit
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+/* Sample CSS with comments */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* TODO: Refactor color variables */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3a0ca3;
+}
+
+/* Header styles */
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+}
+
+/* 
+   Navigation styles
+   This needs optimization for mobile
+*/
+.nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* FIXME: Check hover state on mobile */
+.nav a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    margin-top: 2rem;
+    /* NOTE: Consider adding border instead of margin */
+}

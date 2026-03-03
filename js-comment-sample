@@ -1,0 +1,99 @@
+/**
+ * Sample JavaScript file with various types of comments
+ * This demonstrates what our tool can handle
+ * @version 1.0.0
+ * @author Developer
+ */
+
+// Single-line comment example
+const API_URL = "https://api.example.com/data"; // API endpoint URL
+
+// TODO: Refactor this function for better performance
+function calculateTotal(items) {
+    // Initialize total
+    let total = 0;
+    
+    /* 
+       Multi-line comment example
+       This comment spans multiple lines
+       It explains the loop below
+    */
+    for (let i = 0; i < items.length; i++) {
+        total += items[i].price * items[i].quantity;
+    }
+    
+    // FIXME: Handle edge case when total is negative
+    if (total < 0) {
+        console.log("Warning: Negative total detected");
+        // return 0; // Temporarily commented out
+    }
+    
+    return total;
+}
+
+/**
+ * User class definition
+ * @class
+ * @param {string} name - User's full name
+ * @param {number} age - User's age
+ */
+class User {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+        this.createdAt = new Date();
+    }
+    
+    /**
+     * Get user greeting message
+     * @returns {string} Personalized greeting
+     */
+    getGreeting() {
+        // Return formatted greeting
+        return `Hello, my name is ${this.name} and I'm ${this.age} years old.`;
+    }
+    
+    // Check if user is adult
+    isAdult() {
+        return this.age >= 18; // Adult age threshold
+    }
+}
+
+// /* This is a comment inside a string - it should NOT be removed */
+const commentString = "// This looks like a comment but it's a string";
+const regexPattern = /\/\/.*$/g; // Regex pattern that looks like a comment
+
+/*! 
+ * Special comment - often preserved by minifiers
+ * This comment should be preserved if option is checked
+ * License: MIT
+ */
+
+// Debugging comments
+// console.log("Debug: Starting initialization");
+// debugger;
+
+// HACK: Temporary workaround for browser compatibility
+function getUserAgent() {
+    return navigator.userAgent || "Unknown";
+}
+
+// Example usage
+const user = new User("John Doe", 25);
+console.log(user.getGreeting());
+
+// API call example with fetch
+async function fetchData() {
+    try {
+        // Fetch data from API
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+    }
+}
+
+// NOTE: Consider adding caching mechanism here
+// This would improve performance for repeated requests

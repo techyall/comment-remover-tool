@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Comment Examples</title>
+
+    <!-- ================================================== -->
+    <!--                DOCUMENT INFORMATION               -->
+    <!-- ================================================== -->
+    <!--
+        Author: Your Name
+        Created: 2026-03-03
+        Purpose: Demonstrating all HTML comment types
+    -->
+
+    <!-- TODO: Add meta description -->
+    <!-- FIXME: Update page title later -->
+    <!-- NOTE: This file contains only HTML comments -->
+
+    <!--[if IE]>
+        <p>You are using Internet Explorer.</p>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER SECTION ================= -->
+    <header>
+        <h1>Welcome to My Website</h1>
+
+        <!-- Inline comment example -->
+        <p>
+            This is a paragraph.
+            <!-- This part is hidden comment -->
+            Continue reading...
+        </p>
+    </header>
+
+    <!-- ================= NAVIGATION ================= -->
+    <!-- 
+        Multi-line comment example
+        Used to describe navigation structure
+    -->
+    <nav>
+        <ul>
+            <li>Home</li>
+            <li>About</li>
+            <li>Contact</li>
+        </ul>
+    </nav>
+
+    <!-- DEBUG: Check list alignment -->
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main>
+
+        <section>
+            <h2>About Us</h2>
+            <p>This section contains information about us.</p>
+        </section>
+
+        <!-- Temporarily Disabled Section -->
+        <!--
+        <section>
+            <h2>Coming Soon</h2>
+            <p>This feature is under development.</p>
+        </section>
+        -->
+
+        <!-- NOTE: Replace placeholder text before production -->
+        <p>Sample content goes here.</p>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <!-- FIXME: Update copyright year -->
+    <footer>
+        <p>&copy; 2026 My Website</p>
+    </footer>
+
+    <!-- END OF DOCUMENT -->
+
+</body>
+</html>
